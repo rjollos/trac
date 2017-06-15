@@ -124,12 +124,12 @@ jobs:
         provider: pypi
         user: edgewall-org
         password:
-          secure: IGGKDvic8oRIjbHcpIXYbYnL2RYa6W4cLhhQs8bUspKhwHfLFHVcMMM5u84q3bUYdRMaR44NqQY8aj+BD0Y1WzrZJVBgRLGeUXhJVuGNwcZPAhvi2hRbpfUNeaFYvz5AFwpUd7s9G7ZMCkCyH1aSa215+DSyf5v/8LDEtHRc/1E=
+          secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
         server: https://testpypi.python.org/pypi
         os: linux
         distributions: sdist bdist_wheel
         skip_upload_docs: true
         on:
-          repo: rjollos/trac
+          repo: edgewall/trac
           python: 2.7
           tags: true
