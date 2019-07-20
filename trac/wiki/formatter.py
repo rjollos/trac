@@ -694,7 +694,7 @@ class Formatter(object):
     def get_intertrac_url(self, ns, target):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns + '.url')
-        if not url and ns == 'trac':
+        if not url and ns.lower() == 'trac':
             url = 'https://trac.edgewall.org'
         if url:
             name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
