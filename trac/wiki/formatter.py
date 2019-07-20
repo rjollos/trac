@@ -694,10 +694,12 @@ class Formatter(object):
     def get_intertrac_url(self, ns, target):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns + '.url')
+        name = 'Trac project %s' % ns
         if not url and ns.lower() == 'trac':
             url = 'https://trac.edgewall.org'
+            name = _("The Trac Project")
         if url:
-            name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
+            name = intertrac.get(ns + '.title', name)
             compat = intertrac.getbool(ns + '.compat', 'false')
             # set `compat` default to False now that 0.10 is widely used
             # TODO: remove compatibility code completely for 1.0 release

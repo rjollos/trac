@@ -96,7 +96,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac project trac" crossorigin="anonymous" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac project trac" /></a>
+<a style="padding:0; border:none" href="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" crossorigin="anonymous" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
