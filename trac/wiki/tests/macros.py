@@ -254,6 +254,23 @@ IMAGE_MACRO_TEST_CASES = u"""
 #       according to the W3C XHTML validator).
 
 
+# == [[InterTrac]]
+
+def intertrac_setup(tc):
+    tc.env.config.set('intertrac', 'example', 'example2')
+    # Definition conflict with alias, but must not raise a TypeError.
+    tc.env.config.set('intertrac', 'example.url', 'http://example.org')
+
+
+INTERTRAC_MACRO_TEST_CASES = u"""\
+==============================
+[[InterTrac]]
+------------------------------
+<p>
+</p><table class="wiki intertrac"><tr><th><em>Prefix</em></th><th><em>Trac Site</em></th></tr><tr><td><strong>example</strong></td><td>Alias for <strong>example2</strong></td></tr><tr><td><a href="https://genshi.edgewall.org/timeline"><strong>genshi</strong></a></td><td><a href="https://genshi.edgewall.org">Genshi\'s Trac</a></td></tr><tr><td><strong>t</strong></td><td>Alias for <strong>trac</strong></td></tr><tr><td><a href="http://trac-hacks.org/timeline"><strong>th</strong></a></td><td><a href="http://trac-hacks.org">Trac Hacks</a></td></tr><tr><td><a href="https://trac.edgewall.org/timeline"><strong>trac</strong></a></td><td><a href="https://trac.edgewall.org">The Trac Project</a></td></tr></table><p>
+</p>
+"""
+
 
 # == [[TitleIndex]]
 
@@ -711,6 +728,8 @@ def suite():
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__,
                                   setup=image_setup,
                                   teardown=image_teardown))
+    suite.addTest(formatter.suite(INTERTRAC_MACRO_TEST_CASES, file=__file__,
+                                  setup=intertrac_setup))
     suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex2_setup,
