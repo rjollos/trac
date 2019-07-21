@@ -1376,6 +1376,8 @@ def to_list(splittable, sep=','):
     []
     >>> to_list([])
     []
+
+    :since 1.3.6: the `sep` argument may be a regular expression
     """
     if not splittable:
         return []
