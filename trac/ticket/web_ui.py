@@ -1779,12 +1779,12 @@ class TicketModule(Component):
             new_list = split_list(new)
             added = [elt_renderer(x) for x in new_list if x not in old_list]
             remvd = [elt_renderer(x) for x in old_list if x not in new_list]
-            added = added and tagn_("%(value)s added", "%(value)s added",
-                                    len(added),
-                                    value=separated(added, ' '))
-            remvd = remvd and tagn_("%(value)s removed", "%(value)s removed",
-                                    len(remvd),
-                                    value=separated(remvd, ' '))
+            if added:
+                added = tagn_("%(value)s added", "%(value)s added",
+                              len(added), value=separated(added, ' '))
+            if remvd:
+                remvd = tagn_("%(value)s removed", "%(value)s removed",
+                              len(remvd), value=separated(remvd, ' '))
             if added or remvd:
                 return tag(added, added and remvd and _("; "), remvd)
             else:
