@@ -184,6 +184,7 @@ class TracadminTestCase(unittest.TestCase):
             return ''.join(difflib.unified_diff(expected_lines, output_lines,
                                                 'expected', 'actual'))
 
+        output = re.sub('^(UniqueViolation:)', 'IntegrityError:', output)
         if '[...]' in expected_results:
             m = re.match('.*'.join(map(re.escape,
                                        expected_results.split('[...]'))) +
