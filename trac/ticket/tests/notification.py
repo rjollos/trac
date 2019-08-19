@@ -53,6 +53,7 @@ class RecipientTestCase(unittest.TestCase):
     """Notification test cases for email recipients."""
 
     def setUp(self):
+        notifysuite.start_up()
         self.env = EnvironmentStub(default_data=True)
         config_smtp(self.env)
 
@@ -225,6 +226,7 @@ class NotificationTestCase(unittest.TestCase):
     """Notification test cases that send email over SMTP"""
 
     def setUp(self):
+        notifysuite.start_up()
         self.env = EnvironmentStub(default_data=True)
         config_smtp(self.env)
         self.env.config.set('project', 'url', 'http://localhost/project.url')
@@ -1302,6 +1304,7 @@ Security sensitive:  0                           |          Blocking:
 class AttachmentNotificationTestCase(unittest.TestCase):
 
     def setUp(self):
+        notifysuite.start_up()
         self.env = EnvironmentStub(default_data=True,
                                    path=tempfile.mkdtemp(prefix='trac-tempenv-'))
         config_smtp(self.env)
@@ -1360,6 +1363,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
 class BatchTicketNotificationTestCase(unittest.TestCase):
 
     def setUp(self):
+        notifysuite.start_up()
         self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.env = EnvironmentStub(default_data=True, path=self.env_path)
         config_smtp(self.env)
@@ -1439,12 +1443,15 @@ class NotificationTestSuite(unittest.TestSuite):
         """Start the local SMTP test server"""
         unittest.TestSuite.__init__(self)
         self.smtpd = SMTPThreadedServer(SMTP_TEST_PORT)
-        self.smtpd.start()
         self.addTest(unittest.makeSuite(RecipientTestCase))
         self.addTest(unittest.makeSuite(NotificationTestCase))
         self.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
         self.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
         self.remaining = self.countTestCases()
+
+    def start_up(self):
+        if self.remaining == self.countTestCases():
+            self.smtpd.start()
 
     def tear_down(self):
         """Reset the local SMTP test server"""
