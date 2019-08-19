@@ -624,6 +624,10 @@ def suite():
     import tracopt.versioncontrol.git.tests
     import tracopt.versioncontrol.svn.tests
 
+    if os.environ.get('SKIP_FUNCTIONAL_TESTS'):
+        global INCLUDE_FUNCTIONAL_TESTS
+        INCLUDE_FUNCTIONAL_TESTS = False
+
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.basicSuite())
     suite.addTest(trac.admin.tests.suite())
