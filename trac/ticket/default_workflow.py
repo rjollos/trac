@@ -319,10 +319,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(_("as %(status)s",
-                             status= ticket._old.get('status',
-                                                     ticket['status'])))
             if len(operations) == 1:
+                control.append(_("as %(status)s",
+                                 status= ticket._old.get('status',
+                                                         ticket['status'])))
                 hints.append(_("The owner will remain %(current_owner)s",
                                current_owner=formatted_current_owner)
                              if current_owner else
