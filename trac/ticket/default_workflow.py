@@ -217,7 +217,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         self.log.debug('render_ticket_action_control: action "%s"', action)
 
         this_action = self.actions[action]
-        status = this_action['newstate']
+        next_status = this_action['newstate']
         label = this_action['name']
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'])
@@ -328,10 +328,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                              if current_owner else
                              _("The ticket will remain with no owner"))
         else:
-            if status == '*':
+            if next_status == '*':
                 label = None  # Control won't be created
             else:
-                hints.append(_("Next status will be '%(name)s'", name=status))
+                hints.append(_("Next status will be '%(name)s'",
+                               name=next_status))
         return (label, tag(separated(control, ' ')),
                 '. '.join(hints) + '.' if hints else '')
 
