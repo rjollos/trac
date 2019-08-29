@@ -70,6 +70,32 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self.assertEqual('', unicode(control))
         self.assertEqual("Next status will be 'status2'.", unicode(hints))
 
+    def test_operation_with_no_status_change(self):
+        """Operation with no status change."""
+        config = self.env.config
+        config.set('ticket-workflow', 'change_owner', 'closed -> closed')
+        config.set('ticket-workflow', 'change_owner.operations', 'set_owner')
+
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        ticket['status'] = 'closed'
+        ticket['owner'] = 'user2'
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket', method='POST',
+                          authname='user1')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'change_owner')
+
+        self.assertEqual('change_owner', label)
+        self.assertEqual(
+            'to <input type="text" name="action_change_owner_reassign_owner" '
+            'value="user1" id="action_change_owner_reassign_owner"/>',
+            unicode(control))
+        self.assertEqual("The owner will be changed from user2 to the "
+                         "specified user.", unicode(hints))
+
     def test_transition_to_star(self):
         """Action not rendered by CTW for transition to *
 
