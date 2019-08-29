@@ -326,12 +326,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                current_owner=formatted_current_owner)
                              if current_owner else
                              _("The ticket will remain with no owner"))
-        else:
-            if next_status == '*':
-                label = None  # Control won't be created
-            elif next_status != status:
-                hints.append(_("Next status will be '%(name)s'",
-                               name=next_status))
+        elif next_status == '*':
+            label = None  # Control won't be created
+        elif next_status != status:
+            hints.append(_("Next status will be '%(name)s'",
+                           name=next_status))
         return (label, tag(separated(control, ' ')),
                 '. '.join(hints) + '.' if hints else '')
 
