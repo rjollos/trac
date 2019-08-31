@@ -90,6 +90,8 @@ def parse_workflow_config(rawactions):
                 attributes['label'] = action.replace("_", " ").strip()
         for key, val in required_attrs.items():
             attributes.setdefault(key, val)
+        for val in ('<none>', '< none >'):
+            sub_val(attributes['oldstates'], val, None)
 
     return actions
 
@@ -472,8 +474,6 @@ class ConfigurableTicketWorkflow(Component):
                 actions['_reset'].setdefault(key, val)
 
         for name, info in actions.iteritems():
-            for val in ('<none>', '< none >'):
-                sub_val(actions[name]['oldstates'], val, None)
             if not info['newstate']:
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
