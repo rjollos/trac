@@ -504,7 +504,7 @@ Project environment for 'project1' created.
 
 You may configure the environment by editing the file:
 
-  %(env_path)s/conf/trac.ini
+  %(tracini_path)s
 
 You can run the Trac standalone web server `tracd` and point
 your browser to http://localhost:8000/trac.
@@ -612,7 +612,7 @@ Project environment for 'project1' created.
 
 You may configure the environment by editing the file:
 
-  %(env_path)s/conf/trac.ini
+  %(tracini_path)s
 
 You can run the Trac standalone web server `tracd` and point
 your browser to http://localhost:8000/trac.

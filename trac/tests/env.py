@@ -934,10 +934,14 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
         rmtree(self.parent_dir)
 
     def test_default_values(self):
+        tracini_path = os.path.join(self.env_path, 'conf', 'trac.ini')
         rv, output = self.execute('initenv project1 sqlite:db/sqlite.db')
 
         self.assertEqual(0, rv, output)
-        self.assertExpectedResult(output, {'env_path': self.env_path})
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'tracini_path': tracini_path
+        })
 
         rv, output = self.execute('component list')
         self.assertEqual(0, rv, output)
@@ -962,11 +966,15 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
         self.assertExpectedResult(output, suffix='_permission_list')
 
     def test_no_default_data_argument(self):
+        tracini_path = os.path.join(self.env_path, 'conf', 'trac.ini')
         rv, output = self.execute('initenv project1 sqlite:db/sqlite.db '
                                   '--no-default-data')
 
         self.assertEqual(0, rv, output)
-        self.assertExpectedResult(output, {'env_path': self.env_path})
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'tracini_path': tracini_path
+        })
 
         rv, output = self.execute('component list')
         self.assertEqual(0, rv, output)
