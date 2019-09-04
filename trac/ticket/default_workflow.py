@@ -184,7 +184,7 @@ class ConfigurableTicketWorkflow(Component):
                 continue
             # Exclude action that is effectively a No-op.
             if len(operations) == 1 and \
-                    operations[0] == 'set_owner_to_self' and \
+                    'set_owner_to_self' in operations and \
                     ticket_owner == author and ticket_status == newstate:
                 continue
             oldstates = action_info['oldstates']
