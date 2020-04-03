@@ -517,7 +517,7 @@ in order to initialize and prepare the project database.
                         printout(_(" Indexing default repository"))
                         repos.sync(self._resync_feedback)
                 except TracError as e:
-                    printerr(_("""
+                    printout(_("""
 ---------------------------------------------------------------------
 Warning: couldn't index the default repository.
 
