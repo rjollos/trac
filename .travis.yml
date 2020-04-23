@@ -91,6 +91,7 @@ before_install:
 - pip list
 install:
 - |
+  echo $TRAVIS_BUILD_STAGE_NAME
   if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
        "$TRAVIS_BUILD_STAGE_NAME" = test -a \
        "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
