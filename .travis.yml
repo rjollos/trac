@@ -121,12 +121,9 @@ install:
     *)        tracdb_uri= ;;
   esac
   echo ".uri = $tracdb_uri" >Makefile.cfg
-script:
 - if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
-- if [ "$TRAVIS_BUILD_STAGE_NAME" = test ];
-  then
-    make Trac.egg-info compile unit-test functional-test;
-  fi
+script:
+- make Trac.egg-info compile unit-test functional-test;
 before_deploy:
 - cat contrib/travis/edgewall_host_key >> $HOME/.ssh/known_hosts
 - keyfile=/tmp/id_rsa
@@ -201,8 +198,9 @@ jobs:
     language: generic
     env: pyver=2.7 tracdb=postgresql
   - stage: deploy
+    script: skip
     deploy:
-    - provider: script
+      provider: script
       skip_cleanup: true
       script: scp -i "$keyfile" dist/Trac-* travis@edgewall.org:/var/ftp/pub/trac/incoming
       on:
