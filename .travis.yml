@@ -13,35 +13,6 @@ cache:
 before_install:
 - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
 - test -n "$pyver" || pyver="$(python -c "$print_version")"
-- |
-  case "$tracdb" in
-    postgresql)
-      if [ "$TRAVIS_OS_NAME" = osx ]; then
-        rm -rf /usr/local/var/postgres
-        pg_ctl initdb --pgdata /usr/local/var/postgres
-        pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
-          rc=$?
-          cat /usr/local/var/postgres/postgresql.log
-          exit $rc
-        }
-        createuser -s postgres
-      fi
-      tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
-      echo "$tracdb_version"
-      psql -U postgres -e -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
-      psql -U postgres -e -c "CREATE DATABASE trac OWNER tracuser;"
-      ;;
-    mysql)
-      tracdb_version="MySQL: $(mysql -u root -sN -e 'SELECT version()')"
-      echo "$tracdb_version"
-      mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
-      mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
-      mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
-      ;;
-    *)
-      tracdb_version=
-      ;;
-  esac
 - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
 - |
   {
@@ -103,16 +74,8 @@ install:
   python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
   pip list
 - |
-  case "$tracdb" in
-    sqlite)   tracdb_uri='sqlite:test.db' ;;
-    postgresql) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
-    mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
-    *)        tracdb_uri= ;;
-  esac
-  echo ".uri = $tracdb_uri" >Makefile.cfg
-- if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
 before_script:
-- |
+- |  # Link Subversion bindings to the virtualenv.
   if [ "$TRAVIS_OS_NAME" = linux -a \
        "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
   then
@@ -123,6 +86,43 @@ before_script:
     ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
     python -c 'from svn import core'
   fi
+- |  # Create the database.
+  case "$tracdb" in
+    postgresql)
+      if [ "$TRAVIS_OS_NAME" = osx ]; then
+        rm -rf /usr/local/var/postgres
+        pg_ctl initdb --pgdata /usr/local/var/postgres
+        pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
+          rc=$?
+          cat /usr/local/var/postgres/postgresql.log
+          exit $rc
+        }
+        createuser -s postgres
+      fi
+      tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
+      echo "$tracdb_version"
+      psql -U postgres -e -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
+      psql -U postgres -e -c "CREATE DATABASE trac OWNER tracuser;"
+      tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest'
+      ;;
+    mysql)
+      tracdb_version="MySQL: $(mysql -u root -sN -e 'SELECT version()')"
+      echo "$tracdb_version"
+      mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
+      mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
+      mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
+      tracdb_uri='mysql://tracuser:password@localhost/trac'
+      ;;
+    sqlite)
+      tracdb_uri='sqlite:test.db'
+      ;;
+    *)
+      tracdb_version=
+      tracdb_uri=
+      ;;
+  esac
+  echo ".uri = $tracdb_uri" >Makefile.cfg
+- if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
 script:
 - make Trac.egg-info compile unit-test functional-test;
 before_deploy:
