@@ -140,62 +140,76 @@ notifications:
       secure: lIn4a3G6ww61t3o12DS4aWwEwD6Hl2kxcsZgkxvhU2MgzviJ5j3EBV5F/BlbQmR1BqM51qgDOXoQTO+y9cvzAYBkIy/gfLqZjAl0hfZep6iGZgl1cnUW4c5i9+wkF8PzTaQm+q9gwlIQ7JVedWw9jzHBIn80tCgTcavahAzyelk=
 jobs:
   include:
-  - os: linux
+  - name: Linux | Python 2.6 | SQLite (in-mem)
+    os: linux
     dist: trusty
     python: 2.6
     env: tracdb=
-  - os: linux
+  - name: Linux | Python 2.6 | SQLite
+    os: linux
     dist: trusty
     python: 2.6
     env: tracdb=sqlite
-  - os: linux
+  - name: Linux | Python 2.6 | PostgreSQL
+    os: linux
     dist: trusty
     python: 2.6
     services: postgresql
     env: tracdb=postgresql
-  - os: linux
+  - name: Linux | Python 2.6 | MySQL
+    os: linux
     dist: trusty
     python: 2.6
     services: mysql
     env: tracdb=mysql
-  - os: linux
+  - name: Linux | Python 2.7 | SQLite (in-mem)
+    os: linux
     python: 2.7
     virtualenv:
       system_site_packages: true
     env: tracdb=
-  - os: linux
+  - name: Linux | Python 2.7 | SQLite
+    os: linux
     python: 2.7
     virtualenv:
       system_site_packages: true
     env: tracdb=sqlite
-  - os: linux
+  - name: Linux | Python 2.7 | PostgreSQL
+    os: linux
     python: 2.7
     virtualenv:
       system_site_packages: true
     services: postgresql
     env: tracdb=postgresql
-  - os: linux
+  - name: Linux | Python 2.7 | MySQL
+    os: linux
     python: 2.7
     virtualenv:
       system_site_packages: true
     services: mysql
     env: tracdb=mysql
-  - os: osx
+  - name: OSX | Python 2.6 | SQLite (in-mem)
+    os: osx
     language: generic
     env: pyver=2.6 tracdb=
-  - os: osx
+  - name: OSX | Python 2.6 | SQLite
+    os: osx
     language: generic
     env: pyver=2.6 tracdb=sqlite
-  - os: osx
+  - name: OSX | Python 2.6 | PostgreSQL
+    os: osx
     language: generic
     env: pyver=2.6 tracdb=postgresql
-  - os: osx
+  - name: OSX | Python 2.7 | SQLite (in-mem)
+    os: osx
     language: generic
     env: pyver=2.7 tracdb=
-  - os: osx
+  - name: OSX | Python 2.7 | SQLite
+    os: osx
     language: generic
     env: pyver=2.7 tracdb=sqlite
-  - os: osx
+  - name: OSX | Python 2.7 | PostgreSQL
+    os: osx
     language: generic
     env: pyver=2.7 tracdb=postgresql
   - stage: deploy
