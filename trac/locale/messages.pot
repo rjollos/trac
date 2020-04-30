@@ -1,21 +1,21 @@
 # Translations template for Trac.
-# Copyright (C) 2019 Edgewall Software
+# Copyright (C) 2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.19\n"
+"Project-Id-Version: Trac 1.0.20\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-09-02 18:44+0900\n"
+"POT-Creation-Date: 2020-04-29 20:35-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -2567,7 +2567,7 @@ msgid "%(title)s: %(count)s"
 msgstr ""
 
 #: trac/templates/progress_bar_grouped.html:26
-#: trac/ticket/default_workflow.py:226
+#: trac/ticket/default_workflow.py:227
 msgid "(none)"
 msgstr ""
 
@@ -2897,94 +2897,94 @@ msgid ""
 "notifications: %(message)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:231
+#: trac/ticket/default_workflow.py:232
 msgid "from invalid state"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:232
+#: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:234
+#: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
-#: trac/ticket/default_workflow.py:271
+#: trac/ticket/default_workflow.py:252 trac/ticket/default_workflow.py:262
+#: trac/ticket/default_workflow.py:272
 #, python-format
 msgid "to %(owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:254
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:264
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:274
+#: trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:282
+#: trac/ticket/default_workflow.py:283
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:291
+#: trac/ticket/default_workflow.py:292
 msgid ""
 "Your workflow attempts to set a resolution but uses undefined resolutions"
 " (configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:297
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:305 trac/ticket/default_workflow.py:315
+#: trac/ticket/default_workflow.py:306 trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(resolution)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:307
+#: trac/ticket/default_workflow.py:308
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:318
+#: trac/ticket/default_workflow.py:319
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:320
+#: trac/ticket/default_workflow.py:321
 msgid "The resolution will be deleted"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:323
+#: trac/ticket/default_workflow.py:324
 #, python-format
 msgid "as %(status)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:326
+#: trac/ticket/default_workflow.py:325
 #, python-format
 msgid "The owner will remain %(current_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:329
+#: trac/ticket/default_workflow.py:328
 msgid "The ticket will remain with no owner"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:334
+#: trac/ticket/default_workflow.py:332
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:447
+#: trac/ticket/default_workflow.py:446
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3026,11 +3026,11 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:500
+#: trac/ticket/default_workflow.py:499
 msgid "Error parsing workflow."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:535
+#: trac/ticket/default_workflow.py:534
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
@@ -3154,18 +3154,18 @@ msgid "Ticket"
 msgstr ""
 
 #: trac/ticket/query.py:890 trac/ticket/report.py:329 trac/ticket/report.py:621
-#: trac/ticket/web_ui.py:142 trac/timeline/web_ui.py:239
+#: trac/ticket/web_ui.py:138 trac/timeline/web_ui.py:239
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
 
 #: trac/ticket/query.py:892 trac/ticket/report.py:331 trac/ticket/report.py:623
-#: trac/ticket/web_ui.py:138
+#: trac/ticket/web_ui.py:140
 msgid "Comma-delimited Text"
 msgstr ""
 
 #: trac/ticket/query.py:894 trac/ticket/report.py:333 trac/ticket/report.py:625
-#: trac/ticket/web_ui.py:140
+#: trac/ticket/web_ui.py:142
 msgid "Tab-delimited Text"
 msgstr ""
 
@@ -3173,24 +3173,24 @@ msgstr ""
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1137 trac/ticket/query.py:1148
+#: trac/ticket/query.py:1140 trac/ticket/query.py:1151
 #: trac/ticket/report.py:201 trac/ticket/templates/report_list.html:67
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1147 trac/ticket/report.py:193
+#: trac/ticket/query.py:1150 trac/ticket/report.py:193
 #: trac/ticket/report.py:194 trac/ticket/report.py:196
 #: trac/ticket/templates/report_list.html:20
 #: trac/ticket/templates/report_list.html:38
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1271
+#: trac/ticket/query.py:1274
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1277
+#: trac/ticket/query.py:1280
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3252,32 +3252,32 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1391
+#: trac/ticket/query.py:1394
 #, python-format
 msgid "%(num)d ticket for which %(query)s"
 msgid_plural "%(num)d tickets for which %(query)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/query.py:1400
+#: trac/ticket/query.py:1403
 msgid "Error executing TicketQuery macro"
 msgstr ""
 
-#: trac/ticket/query.py:1473
+#: trac/ticket/query.py:1476
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr ""
 
-#: trac/ticket/query.py:1488
+#: trac/ticket/query.py:1491
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1506
+#: trac/ticket/query.py:1509
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1530
+#: trac/ticket/query.py:1533
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -4936,7 +4936,7 @@ msgstr ""
 #: trac/versioncontrol/api.py:720 trac/versioncontrol/web_ui/browser.py:358
 #: trac/versioncontrol/web_ui/changeset.py:249
 #: trac/versioncontrol/web_ui/changeset.py:1084
-#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
+#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:419
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr ""
@@ -6045,7 +6045,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1086
-#: trac/versioncontrol/web_ui/log.py:420
+#: trac/versioncontrol/web_ui/log.py:421
 msgid "No default repository defined"
 msgstr ""
 
@@ -6081,7 +6081,7 @@ msgstr ""
 msgid "Older Revisions"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:416
+#: trac/versioncontrol/web_ui/log.py:417
 msgid "No permission to view change log"
 msgstr ""
 
