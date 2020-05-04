@@ -264,7 +264,7 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
 .batchmod_property { width: 100%; }
 .batchmod_required:before { content: " * "; }
 #batchmod_form fieldset input,
-#batchmod_form fieldset select, .batchmod_property, .batchmod_label {
+#batchmod_form fieldset select, .batchmod_property {
  font-size: .9em;  /* query_filter_font_size */
 }
 #action { margin-top: 0; line-height: 2em; }
