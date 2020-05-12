@@ -216,24 +216,24 @@ class DbRepositoryProvider(Component):
 
     # Public interface
 
-    def add_repository(self, reponame, dir, type_=None):
+    def add_repository(self, reponame, path, type_=None):
         """Add a repository."""
         reponame = stripws(reponame)
-        dir = stripws(dir)
-        if not os.path.isabs(dir):
+        path = stripws(path)
+        if not os.path.isabs(path):
             raise TracError(_("The repository directory must be absolute"))
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         if type_ and type_ not in rm.get_supported_types():
-            raise TracError(_("The repository type '%(type)s' is not "
-                              "supported", type=type_))
+            raise TracError(_("The repository type '%(type_)s' is not "
+                              "supported", type_=type_))
         with self.env.db_transaction as db:
-            id = rm.get_repository_id(reponame)
+            id_ = rm.get_repository_id(reponame)
             db.executemany(
                 "INSERT INTO repository (id, name, value) VALUES (%s, %s, %s)",
-                [(id, 'dir', dir),
-                 (id, 'type', type_ or '')])
+                [(id_, 'dir', path),
+                 (id_, 'type', type_ or '')])
         rm.reload_repositories()
 
     def add_alias(self, reponame, target):
