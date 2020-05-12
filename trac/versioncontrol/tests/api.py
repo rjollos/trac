@@ -158,6 +158,20 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.verify_raises(TracError, message, self.db_provider.add_alias,
                            reponame, target)
 
+    def test_add_repository(self):
+        self.db_provider.add_repository('repos1', '/path/to/repos1')
+        self.db_provider.add_repository(' repos2 ', ' /path/to/repos2 ')
+        self.db_provider.add_repository(u'\u200brepos3\u200b',
+                                        u'\u200b/path/to/repos3\u200b')
+        self.db_provider.add_repository('repos 4', '/path/to the/repos4')
+
+        repositories = RepositoryManager(self.env).get_all_repositories()
+
+        self.assertEqual('/path/to/repos1', repositories['repos1']['dir'])
+        self.assertEqual('/path/to/repos2', repositories['repos2']['dir'])
+        self.assertEqual('/path/to/repos3', repositories['repos3']['dir'])
+        self.assertEqual('/path/to the/repos4', repositories['repos 4']['dir'])
+
     def test_add_alias(self):
         self.db_provider.add_repository('', '/path/to/repos')
         self.db_provider.add_repository('target', '/path/to/repos')
