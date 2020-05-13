@@ -268,7 +268,7 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[2])
         tc.formvalue('edit', 'name', names[0])
         tc.submit('save')
-        tc.find('The repository &#34;%s&#34; already exists.' % names[0])
+        tc.find('The repository "%s" already exists.' % names[0])
         tc.notfind(internal_error)
 
 

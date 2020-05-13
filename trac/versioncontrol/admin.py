@@ -258,33 +258,40 @@ class RepositoryAdminPanel(Component):
                             self._check_dir(req, changes['dir']):
                         valid = False
                     if valid and changes:
-                        db_provider.modify_repository(reponame, changes)
-                        add_notice(req, _('Your changes have been saved.'))
-                        name = req.args.get('name')
-                        pretty_name = name or '(default)'
-                        resync = tag.code('trac-admin "%s" repository resync '
-                                          '"%s"' % (self.env.path, pretty_name))
-                        if 'dir' in changes:
-                            msg = tag_('You should now run %(resync)s to '
-                                       'synchronize Trac with the repository.',
-                                       resync=resync)
-                            add_notice(req, msg)
-                        elif 'type' in changes:
-                            msg = tag_('You may have to run %(resync)s to '
-                                       'synchronize Trac with the repository.',
-                                       resync=resync)
-                            add_notice(req, msg)
-                        if name and name != path_info and 'alias' not in info:
-                            cset_added = tag.code('trac-admin "%s" changeset '
-                                                  'added "%s" $REV'
-                                                  % (self.env.path,
-                                                     pretty_name))
-                            msg = tag_('You will need to update your '
-                                       'post-commit hook to call '
-                                       '%(cset_added)s with the new '
-                                       'repository name.',
-                                       cset_added=cset_added)
-                            add_notice(req, msg)
+                        try:
+                            db_provider.modify_repository(reponame, changes)
+                        except TracError as e:
+                            add_warning(req, e)
+                            valid = False
+                        else:
+                            add_notice(req, _('Your changes have been saved.'))
+                            name = req.args.get('name')
+                            pretty_name = name or '(default)'
+                            resync = tag.code(
+                                    'trac-admin "%s" repository resync "%s"'
+                                    % (self.env.path, pretty_name))
+                            if 'dir' in changes:
+                                msg = tag_('You should now run %(resync)s to '
+                                           'synchronize Trac with the '
+                                           'repository.', resync=resync)
+                                add_notice(req, msg)
+                            elif 'type' in changes:
+                                msg = tag_('You may have to run %(resync)s to '
+                                           'synchronize Trac with the '
+                                           'repository.', resync=resync)
+                                add_notice(req, msg)
+                            if name and name != path_info and \
+                                    'alias' not in info:
+                                cset_added = tag.code(
+                                        'trac-admin "%s" changeset added '
+                                        '"%s" $REV'
+                                        % (self.env.path, pretty_name))
+                                msg = tag_('You will need to update your '
+                                           'post-commit hook to call '
+                                           '%(cset_added)s with the new '
+                                           'repository name.',
+                                           cset_added=cset_added)
+                                add_notice(req, msg)
                     if valid:
                         req.redirect(req.href.admin(category, page))
 
@@ -310,27 +317,33 @@ class RepositoryAdminPanel(Component):
                         add_warning(req, _('Missing arguments to add a '
                                            'repository.'))
                     elif self._check_dir(req, dir):
-                        db_provider.add_repository(name, dir, type_)
-                        add_notice(req, _('The repository "%(name)s" has been '
-                                          'added.', name=pretty_name))
-                        resync = tag.code('trac-admin "%s" repository resync '
-                                          '"%s"' % (self.env.path, pretty_name))
-                        msg = tag_('You should now run %(resync)s to '
-                                   'synchronize Trac with the repository.',
-                                   resync=resync)
-                        add_notice(req, msg)
-                        cset_added = tag.code('trac-admin "%s" changeset '
-                                              'added "%s" $REV'
-                                              % (self.env.path, pretty_name))
-                        doc = tag.a(_("documentation"),
-                                    href=req.href.wiki('TracRepositoryAdmin')
-                                         + '#Synchronization')
-                        msg = tag_('You should also set up a post-commit hook '
-                                   'on the repository to call %(cset_added)s '
-                                   'for each committed changeset. See the '
-                                   '%(doc)s for more information.',
-                                   cset_added=cset_added, doc=doc)
-                        add_notice(req, msg)
+                        try:
+                            db_provider.add_repository(name, dir, type_)
+                        except TracError as e:
+                            add_warning(req, e)
+                        else:
+                            add_notice(req, _('The repository "%(name)s" has '
+                                              'been added.', name=pretty_name))
+                            resync = tag.code(
+                                    'trac-admin "%s" repository resync "%s"'
+                                    % (self.env.path, pretty_name))
+                            msg = tag_('You should now run %(resync)s to '
+                                       'synchronize Trac with the repository.',
+                                       resync=resync)
+                            add_notice(req, msg)
+                            cset_added = tag.code(
+                                    'trac-admin "%s" changeset added "%s" $REV'
+                                    % (self.env.path, pretty_name))
+                            href = req.href.wiki('TracRepositoryAdmin') + \
+                                    '#Synchronization'
+                            doc = tag.a(_("documentation"), href=href)
+                            msg = tag_('You should also set up a post-commit '
+                                       'hook on the repository to call '
+                                       '%(cset_added)s for each committed '
+                                       'changeset. See the %(doc)s for more '
+                                       'information.',
+                                       cset_added=cset_added, doc=doc)
+                            add_notice(req, msg)
 
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
@@ -415,10 +428,6 @@ class RepositoryAdminPanel(Component):
         """Check that a repository directory is valid, and add a warning
         message if not.
         """
-        if not os.path.isabs(dir):
-            add_warning(req, _('The repository directory must be an absolute '
-                               'path.'))
-            return False
         prefixes = [os.path.join(self.env.path, prefix)
                     for prefix in self.allowed_repository_dir_prefixes]
         if prefixes and not any(is_path_below(dir, prefix)

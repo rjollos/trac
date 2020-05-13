@@ -221,7 +221,8 @@ class DbRepositoryProvider(Component):
         reponame = stripws(reponame)
         path = stripws(path)
         if not os.path.isabs(path):
-            raise TracError(_("The repository directory must be absolute"))
+            raise TracError(
+                    _("The repository directory must be an absolute path."))
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
@@ -306,8 +307,8 @@ class DbRepositoryProvider(Component):
                 if k in ('hidden', 'sync_per_request'):
                     v = '1' if as_bool(v) else None
                 if k == 'dir' and not os.path.isabs(native_path(v)):
-                    raise TracError(_("The repository directory must be "
-                                      "absolute"))
+                    raise TracError(
+                        _("The repository directory must be an absolute path."))
                 db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
                    (v, id, k))
                 if not db(
