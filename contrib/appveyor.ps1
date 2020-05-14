@@ -49,12 +49,15 @@ $pgHome     = 'C:\Program Files\PostgreSQL\9.3'
 $pgUser     = 'postgres'
 $pgPassword = 'Password12!'
 
+$fcrypt    = "$deps\fcrypt-1.3.1.tar.gz"
+$fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
 
 # External Python dependencies
 
-$pipCommonPackages = @(
+$pipPackages = @(
     'genshi>=0.7',
     'babel',
+    $fcrypt,
     'twill==0.9.1',
     'configobj',
     'docutils',
@@ -64,22 +67,14 @@ $pipCommonPackages = @(
     'wheel'
 )
 
-$fcrypt    = "$deps\fcrypt-1.3.1.tar.gz"
-$fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
+$condaPackages = @(
+    'lxml'
+)
 
 $svnBase = "svn-win32-1.8.15"
 $svnBaseAp = "$svnBase-ap24"
 $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
 
-
-$pipPackages = @{
-    '1.0-stable' = @($fcrypt)
-    trunk = @('passlib')
-}
-
-$condaCommonPackages = @(
-    'lxml'
-)
 
 # ------------------------------------------------------------------
 # "Environment" environment variables
@@ -90,7 +85,6 @@ $condaCommonPackages = @(
 # tested.
 
 # These variables are:
-#  - SVN_BRANCH: the line of development (1.0-stable, ... trunk)
 #  - PYTHONHOME: the version of python we are testing
 #  - TRAC_TEST_DB_URI: the database backend we are testing
 #  - SKIP_ENV: don't perform any step with this environment (optional)
@@ -108,8 +102,6 @@ $usingPostgresql = $env:TRAC_TEST_DB_URI -match '^postgres:'
 $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
-
-$svnBranch = $env:SVN_BRANCH
 
 
 # ------------------------------------------------------------------
@@ -194,13 +186,8 @@ function Trac-Install {
         & mkdir $deps
     }
 
-    # Download fcrypt if needed (only for 1.0-stable after #12239)
-
-    if ($svnBranch -eq '1.0-stable') {
-        if (-not (Test-Path $fcrypt)) {
-            & curl.exe -sS $fcryptUrl -o $fcrypt
-        }
-    }
+    # Download fcrypt, only for 1.0-stable after #12239
+    & curl.exe -sS $fcryptUrl -o $fcrypt
 
     # Subversion support via win32svn project, for Python 2.7 32-bits
 
@@ -230,10 +217,10 @@ function Trac-Install {
     }
 
     & pip --version
-    & pip install $pipCommonPackages $pipPackages.$svnBranch
+    & pip install $pipPackages
 
     if ($pyIsConda) {
-        & conda.exe install -qy $condaCommonPackages
+        & conda.exe install -qy $condaPackages
     }
 
     if ($usingMysql) {
