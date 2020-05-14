@@ -436,5 +436,5 @@ function Trac-Tests {
     # Prepare release artifacts
     #
 
-    & make.exe release-src wininst
+    & make.exe release-exe
 }
