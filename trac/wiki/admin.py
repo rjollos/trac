@@ -131,12 +131,10 @@ class WikiAdmin(Component):
                     ORDER BY version DESC LIMIT 1
                     """, (title,)):
                 if title in create_only:
-                    printout(_("  %(title)s already exists",
-                               title=title))
+                    self.log.info("%s already exists", title)
                     return False
                 if data == old:
-                    printout(_("  %(title)s is already up to date",
-                               title=title))
+                    self.log.info("%s is already up to date", title)
                     return False
 
             if replace and old:
@@ -157,6 +155,8 @@ class WikiAdmin(Component):
                             title, title))
             if not old:
                 del WikiSystem(self.env).pages
+
+        self.log.info("%s imported from %s", title, path_to_unicode(filename))
         return True
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
@@ -167,9 +167,7 @@ class WikiAdmin(Component):
                 filename = os.path.join(dir, page)
                 if os.path.isfile(filename):
                     page = unicode_unquote(page.encode('utf-8'))
-                    if self.import_page(filename, page, create_only, replace):
-                        self.log.info("%s imported from %s",
-                                      page, path_to_unicode(filename))
+                    self.import_page(filename, page, create_only, replace)
 
     def _complete_page(self, args):
         if len(args) == 1:
