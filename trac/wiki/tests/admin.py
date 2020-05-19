@@ -18,8 +18,8 @@ import unittest
 
 from trac.test import EnvironmentStub
 from trac.util import create_file
-from trac.wiki.model import WikiPage
 from trac.wiki.admin import WikiAdmin
+from trac.wiki.model import WikiPage
 
 
 class WikiAdminTestCase(unittest.TestCase):

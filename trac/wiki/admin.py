@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/.
 
-import os.path
+import os
 import pkg_resources
 import sys
 
@@ -20,7 +20,7 @@ from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem, validate_page_name
-from trac.util import read_file
+from trac.util import lazy, read_file
 from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
                               to_utimestamp, utc
 from trac.util.text import path_to_unicode, print_table, printout, \
@@ -86,11 +86,14 @@ class WikiAdmin(Component):
                'Upgrade default wiki pages to current version',
                None, self._do_upgrade)
 
-    def get_wiki_list(self):
-        return list(WikiSystem(self.env).get_pages())
+    @lazy
+    def default_pages_dir(self):
+        return pkg_resources.resource_filename('trac.wiki', 'default-pages')
+
+    def get_wiki_list(self, prefix=None):
+        return list(WikiSystem(self.env).get_pages(prefix))
 
     def export_page(self, page, filename):
-
         for text, in self.env.db_query("""
                 SELECT text FROM wiki WHERE name=%s
                 ORDER BY version DESC LIMIT 1
@@ -107,8 +110,7 @@ class WikiAdmin(Component):
         else:
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))
 
-    def import_page(self, filename, title, create_only=[],
-                    replace=False):
+    def import_page(self, filename, title, create_only=[], replace=False):
         if not validate_page_name(title):
             raise AdminCommandError(_("Invalid Wiki page name '%(name)s'",
                                       name=title))
@@ -123,15 +125,19 @@ class WikiAdmin(Component):
 
         with self.env.db_transaction as db:
             # Make sure we don't insert the exact same page twice
-            old = db("""SELECT text FROM wiki WHERE name=%s
-                        ORDER BY version DESC LIMIT 1
-                        """, (title,))
-            if old and title in create_only:
-                printout(_("  %(title)s already exists", title=title))
-                return False
-            if old and data == old[0][0]:
-                printout(_("  %(title)s is already up to date", title=title))
-                return False
+            old = None
+            for old, in db("""
+                    SELECT text FROM wiki WHERE name=%s
+                    ORDER BY version DESC LIMIT 1
+                    """, (title,)):
+                if title in create_only:
+                    printout(_("  %(title)s already exists",
+                               title=title))
+                    return False
+                if data == old:
+                    printout(_("  %(title)s is already up to date",
+                               title=title))
+                    return False
 
             if replace and old:
                 db("""UPDATE wiki SET text=%s
@@ -159,8 +165,8 @@ class WikiAdmin(Component):
                 if page in ignore:
                     continue
                 filename = os.path.join(dir, page)
-                page = unicode_unquote(page.encode('utf-8'))
                 if os.path.isfile(filename):
+                    page = unicode_unquote(page.encode('utf-8'))
                     if self.import_page(filename, page, create_only, replace):
                         self.log.info("%s imported from %s",
                                       page, path_to_unicode(filename))
@@ -211,8 +217,7 @@ class WikiAdmin(Component):
     def _do_remove(self, name):
         with self.env.db_transaction:
             if name.endswith('*'):
-                pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
-                                                            or None))
+                pages = self.get_wiki_list(name.rstrip('*') or None)
                 for p in pages:
                     page = model.WikiPage(self.env, p)
                     page.delete()
@@ -238,8 +243,8 @@ class WikiAdmin(Component):
                 raise AdminCommandError(_("'%(name)s' is not a directory",
                                           name=path_to_unicode(directory)))
         for p in pages:
-            if any(p == name or (name.endswith('*')
-                                 and p.startswith(name[:-1]))
+            if any(p == name or
+                   name.endswith('*') and p.startswith(name[:-1])
                    for name in names):
                 dst = os.path.join(directory, unicode_quote(p, ''))
                 printout(' %s => %s' % (p, dst))
@@ -264,8 +269,7 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
 
     def _do_upgrade(self):
-        self.load_pages(pkg_resources.resource_filename('trac.wiki',
-                                                        'default-pages'),
+        self.load_pages(self.default_pages_dir,
                         ignore=['WikiStart', 'SandBox'],
                         create_only=['InterMapTxt'])
 
@@ -274,11 +278,9 @@ class WikiAdmin(Component):
     def environment_created(self):
         """Add default wiki pages when environment is created."""
         self.log.info("Installing default wiki pages")
-        pages_dir = pkg_resources.resource_filename('trac.wiki',
-                                                    'default-pages')
         with self.env.db_transaction as db:
-            self.load_pages(pages_dir)
-            for page in os.listdir(pages_dir):
+            self.load_pages(self.default_pages_dir)
+            for page in os.listdir(self.default_pages_dir):
                 if page not in ('InterMapTxt', 'SandBox', 'WikiStart'):
                     db("UPDATE wiki SET readonly='1' WHERE name=%s", (page,))
 
