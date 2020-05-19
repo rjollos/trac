@@ -122,6 +122,7 @@ class WikiAdmin(Component):
         else:
             data = sys.stdin.read()
         data = to_unicode(data, 'utf-8')
+        title = unicode_unquote(title.encode('utf-8'))
 
         with self.env.db_transaction as db:
             # Make sure we don't insert the exact same page twice
@@ -160,14 +161,17 @@ class WikiAdmin(Component):
         return True
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
+        count = 0
         with self.env.db_transaction:
-            for page in os.listdir(dir):
+            for page in sorted(os.listdir(dir)):
                 if page in ignore:
                     continue
                 filename = os.path.join(dir, page)
                 if os.path.isfile(filename):
                     page = unicode_unquote(page.encode('utf-8'))
-                    self.import_page(filename, page, create_only, replace)
+                    if self.import_page(filename, page, create_only, replace):
+                        count += 1
+        return count
 
     def _complete_page(self, args):
         if len(args) == 1:
@@ -228,7 +232,7 @@ class WikiAdmin(Component):
         self.export_page(page, filename)
 
     def _do_import(self, page, filename=None):
-        self.import_page(filename, page)
+        self._import(filename, page)
 
     def _do_dump(self, directory, *names):
         if not names:
@@ -248,18 +252,6 @@ class WikiAdmin(Component):
                 printout(' %s => %s' % (p, dst))
                 self.export_page(p, dst)
 
-    def _load_or_replace(self, paths, replace):
-        with self.env.db_transaction:
-            for path in paths:
-                if os.path.isdir(path):
-                    self.load_pages(path, replace=replace)
-                else:
-                    page = os.path.basename(path)
-                    page = unicode_unquote(page.encode('utf-8'))
-                    if self.import_page(path, page, replace=replace):
-                        printout(_("  %(page)s imported from %(filename)s",
-                                   filename=path_to_unicode(path), page=page))
-
     def _do_load(self, *paths):
         self._load_or_replace(paths, replace=False)
 
@@ -267,9 +259,29 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
 
     def _do_upgrade(self):
-        self.load_pages(self.default_pages_dir,
-                        ignore=['WikiStart', 'SandBox'],
-                        create_only=['InterMapTxt'])
+        count = self.load_pages(self.default_pages_dir,
+                                ignore=['WikiStart', 'SandBox'],
+                                create_only=['InterMapTxt'])
+        printout(_("Upgrade done: %(count)s pages upgraded.", count=count))
+
+    def _import(self, filename, title, replace=False):
+        if self.import_page(filename, title, replace=replace):
+            printout(_("  %(title)s imported from %(filename)s",
+                       filename=path_to_unicode(filename), title=title))
+        else:
+            printout(_("  %(title)s is already up to date", title=title))
+
+    def _load_or_replace(self, paths, replace):
+        with self.env.db_transaction:
+            for path in paths:
+                if os.path.isdir(path):
+                    for page in sorted(os.listdir(path)):
+                        filename = os.path.join(path, page)
+                        if os.path.isfile(filename):
+                            self._import(filename, page, replace)
+                else:
+                    page = os.path.basename(path)
+                    self._import(path, page, replace)
 
     # IEnvironmentSetupParticipant methods
 
