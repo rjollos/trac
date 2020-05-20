@@ -557,8 +557,6 @@ class TicketModule(Component):
         fields = self._prepare_fields(req, ticket)
 
         data['fields'] = fields
-        data['fields_map'] = {field['name']: i
-                              for i, field in enumerate(fields)}
 
         if req.is_xhr:
             data['preview_mode'] = True
@@ -1646,7 +1644,6 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket, field_changes)
-        fields_map = {field['name']: i for i, field in enumerate(fields)}
 
         # -- Ticket Change History
 
@@ -1741,8 +1738,7 @@ class TicketModule(Component):
                     class_=chrome.author_class(req, user))
         data.update({
             'context': context, 'conflicts': conflicts,
-            'fields': fields, 'fields_map': fields_map,
-            'changes': changes, 'replies': replies,
+            'fields': fields, 'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,
             'change_preview': change_preview, 'closetime': closetime,
