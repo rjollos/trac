@@ -33,7 +33,7 @@ from trac.resource import (
 )
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket import model
-from trac.ticket.api import TicketSystem, ITicketManipulator
+from trac.ticket.api import TicketSystem, ITicketManipulator, TicketFieldList
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -1518,7 +1518,7 @@ class TicketModule(Component):
 
     def _prepare_fields(self, req, ticket, field_changes=None):
         context = web_context(req, ticket.resource)
-        fields = []
+        fields = TicketFieldList()
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
