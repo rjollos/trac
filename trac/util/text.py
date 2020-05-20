@@ -83,7 +83,9 @@ def jinja2template(template, text=False):
                  expansion will be XML/HTML escaped
 
     """
-    return jinja2env(autoescape=not text).from_string(template)
+    return jinja2env(autoescape=not text,
+                     line_statement_prefix=None,
+                     line_comment_prefix=None).from_string(template)
 
 
 # -- Unicode
