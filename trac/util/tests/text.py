@@ -429,12 +429,33 @@ class StripwsTestCase(unittest.TestCase):
 class Jinja2TemplateTestCase(unittest.TestCase):
     def test_html_template(self):
         self.assertEqual("<h1>Hell&amp;O</h1>",
-                         jinja2template("<h1>${hell}O</h1>").render(
-                             {'hell': 'Hell&'}))
+                         jinja2template("<h1>${hell}O</h1>")
+                         .render({'hell': 'Hell&'}))
+
+    def test_html_template_with_leading_hash(self):
+        self.assertEqual("#<span>1&amp;2</span>",
+                         jinja2template("#<span>${id}</span>")
+                         .render({'id': '1&2'}))
+
+    def test_html_template_with_leading_double_hash(self):
+        self.assertEqual("##<span>1&amp;2</span>",
+                         jinja2template("##<span>${id}</span>")
+                        .render({'id': "1&2"}))
+
     def test_text_template(self):
         self.assertEqual("<h1>Hell&O</h1>",
-                         jinja2template("<h1>${hell}O</h1>", text=True).render(
-                             {'hell': 'Hell&'}))
+                         jinja2template("<h1>${hell}O</h1>", text=True)
+                         .render({'hell': 'Hell&'}))
+
+    def test_text_template_with_leading_hash(self):
+        self.assertEqual("#10",
+                         jinja2template("#${id}", text=True)
+                         .render({'id': 10}))
+
+    def test_text_template_with_leading_double_hash(self):
+        self.assertEqual("##10",
+                         jinja2template("##${id}", text=True)
+                         .render({'id': 10}))
 
 
 class LevenshteinDistanceTestCase(unittest.TestCase):
