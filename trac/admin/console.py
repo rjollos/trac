@@ -32,7 +32,7 @@ from trac.admin.api import AdminCommandError, AdminCommandManager, \
 from trac.config import Configuration
 from trac.core import TracError
 from trac.env import Environment
-from trac.util import translation, warn_setuptools_issue
+from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, \
                            getpreferredencoding, printerr, printout, \
@@ -503,7 +503,6 @@ def _quote_args(args):
 def _run(args):
     if args is None:
         args = sys.argv[1:]
-    warn_setuptools_issue()
     admin = TracAdmin()
     if args:
         if args[0] in ('-h', '--help', 'help'):
