@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import io
 import os.path
 import re
 import sys
 
-from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
 
 from trac.loader import load_components
@@ -19,45 +17,10 @@ from trac.wiki.formatter import format_to_html
 from trac.wiki.model import WikiPage
 
 try:
-    import html2rest
+    import pypandoc
 except ImportError:
-    printerr("The html2rest package must be installed.")
+    printerr("The pypandoc package must be installed.")
     sys.exit(1)
-
-
-class Parser(html2rest.Parser):
-
-    def __init__(self, writer=sys.stdout, encoding='utf8', relroot=None,
-                 relpath=None):
-        html2rest.Parser.__init__(self, writer, encoding, relroot, relpath)
-        self.links = {}
-
-    def end_a(self):
-        if '#pending' in self.hrefs:
-            href = self.hrefs['#pending']
-            label = self.hrefs[href]
-            key = label.lower()
-            if key not in self.links:
-                self.links[key] = (label, href)
-            elif href != self.links[key][1]:
-                alt = label
-                while True:
-                    alt += '*'
-                    if alt not in self.links:
-                        break
-                    continue
-                self.data(alt[len(label):])
-                self.hrefs[href] = alt
-                self.links[alt] = (alt, href)
-            self.data('`_')
-            del self.hrefs['#pending']
-
-    def end_body(self):
-        self.end_p()
-        for label, href in self.links.values():
-            if href[0] != '#':
-                self.writeline('.. _%s: %s' % (label, href))
-        self.end_p()
 
 
 def wiki2rest(env, context, wiki):
@@ -68,10 +31,7 @@ def wiki2rest(env, context, wiki):
     html = html.replace('<span class="icon">\u200b</span>', '')
     html = re.sub(r'<em>\s*([^<]*?)\s*</em>', r'<em>\1</em>', html)
     html = '<html><body>%s</body></html>' % html
-    writer = io.BytesIO()
-    with closing(Parser(writer, 'utf-8', None, None)) as parser:
-        parser.feed(html)
-    rst = writer.getvalue().strip('\n')
+    rst = pypandoc.convert_text(html, 'rst', 'html')
     rst = re.sub('\n{4,}', '\n\n\n', rst)
     # sort links
     rst = re.sub(r'(?:\n\.\. _[^\n]*)+\Z',
