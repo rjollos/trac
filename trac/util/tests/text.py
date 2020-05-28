@@ -434,12 +434,12 @@ class Jinja2TemplateTestCase(unittest.TestCase):
 
     def test_html_template_with_leading_hash(self):
         self.assertEqual("#<span>1&amp;2</span>",
-                         jinja2template("#<span>${id}</span>")
+                         jinja2template("#<span>${id}</span>", oneliner=True)
                          .render({'id': '1&2'}))
 
     def test_html_template_with_leading_double_hash(self):
         self.assertEqual("##<span>1&amp;2</span>",
-                         jinja2template("##<span>${id}</span>")
+                         jinja2template("##<span>${id}</span>", oneliner=True)
                         .render({'id': "1&2"}))
 
     def test_text_template(self):
@@ -449,12 +449,14 @@ class Jinja2TemplateTestCase(unittest.TestCase):
 
     def test_text_template_with_leading_hash(self):
         self.assertEqual("#10",
-                         jinja2template("#${id}", text=True)
+                         jinja2template("#${id}",
+                                        text=True, oneliner=True)
                          .render({'id': 10}))
 
     def test_text_template_with_leading_double_hash(self):
         self.assertEqual("##10",
-                         jinja2template("##${id}", text=True)
+                         jinja2template("##${id}",
+                                        text=True, oneliner=True)
                          .render({'id': 10}))
 
 
