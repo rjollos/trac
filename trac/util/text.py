@@ -75,19 +75,15 @@ def jinja2env(**kwargs):
     )
     return jenv
 
-def jinja2template(template, text=False, oneliner=False):
+def jinja2template(template, text=False, **kwargs):
     """Creates a Jinja2 ``Template`` from inlined source.
 
     :param template: the template content
     :param text: if set to `False`, the result of the variable
                  expansion will be XML/HTML escaped
-    :param oneliner: if set to `False`, lines starting with `#` will
-                     be processed as a line statement and lines
-                     starting with `##` will be processed as a comment.
+    :param kwargs: additional arguments to pass to `jinja2env`. See
+                   `jinja2.Environment` for supported arguments.
     """
-    kwargs = {}
-    if oneliner:
-        kwargs = {'line_statement_prefix': None, 'line_comment_prefix': None}
     return jinja2env(autoescape=not text, **kwargs).from_string(template)
 
 

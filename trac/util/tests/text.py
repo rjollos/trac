@@ -432,32 +432,20 @@ class Jinja2TemplateTestCase(unittest.TestCase):
                          jinja2template("<h1>${hell}O</h1>")
                          .render({'hell': 'Hell&'}))
 
-    def test_html_template_with_leading_hash(self):
-        self.assertEqual("#<span>1&amp;2</span>",
-                         jinja2template("#<span>${id}</span>", oneliner=True)
-                         .render({'id': '1&2'}))
-
-    def test_html_template_with_leading_double_hash(self):
-        self.assertEqual("##<span>1&amp;2</span>",
-                         jinja2template("##<span>${id}</span>", oneliner=True)
-                        .render({'id': "1&2"}))
-
     def test_text_template(self):
         self.assertEqual("<h1>Hell&O</h1>",
                          jinja2template("<h1>${hell}O</h1>", text=True)
                          .render({'hell': 'Hell&'}))
 
-    def test_text_template_with_leading_hash(self):
+    def test_text_template_line_statement_prefix_none(self):
         self.assertEqual("#10",
-                         jinja2template("#${id}",
-                                        text=True, oneliner=True)
-                         .render({'id': 10}))
+             jinja2template("#${id}", text=True,
+                            line_statement_prefix=None).render({'id': 10}))
 
-    def test_text_template_with_leading_double_hash(self):
+    def test_text_template_line_comment_prefix_none(self):
         self.assertEqual("##10",
-                         jinja2template("##${id}",
-                                        text=True, oneliner=True)
-                         .render({'id': 10}))
+             jinja2template("##${id}", text=True, line_statement_prefix=None,
+                            line_comment_prefix=None).render({'id': 10}))
 
 
 class LevenshteinDistanceTestCase(unittest.TestCase):
