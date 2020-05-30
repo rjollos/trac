@@ -50,6 +50,7 @@ $pgUser     = 'postgres'
 $pgPassword = 'Password12!'
 
 $firefoxHome = 'C:\Program Files\Mozilla Firefox'
+$tidylibHome = 'C:\ProgramData\chocolatey\lib\html-tidy\tools\tidy-5.6.0-vc14-64b\bin'
 
 # External Python dependencies
 
@@ -63,11 +64,8 @@ $pipPackages = @(
     'pytz',
     'textile',
     'wheel',
-    'selenium'
-)
-
-$condaPackages = @(
-    'tidy-html5'
+    'selenium',
+    'pytidylib'
 )
 
 $svnBase = "svn-win32-1.8.15"
@@ -98,6 +96,7 @@ $pyHome = $env:PYTHONHOME
 $usingMysql      = $env:TRAC_TEST_DB_URI -match '^mysql:'
 $usingPostgresql = $env:TRAC_TEST_DB_URI -match '^postgres:'
 $usingFirefox    = $pipPackages -contains 'selenium'
+$usingTidylib    = $pipPackages -contains 'pytidylib'
 $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
@@ -172,6 +171,10 @@ if ($usingFirefox) {
     $env:Path = "$($env:Path);$firefoxHome"
 }
 
+if ($usingTidylib) {
+    $env:Path = "$($env:Path);$tidylibHome"
+}
+
 # ------------------------------------------------------------------
 # Steps
 # ------------------------------------------------------------------
@@ -214,10 +217,6 @@ function Trac-Install {
     & pip.exe --version
     & pip.exe install -U $pipPackages
 
-    if ($pyIsConda) {
-        & conda.exe install -qy $condaPackages
-    }
-
     if ($usingMysql) {
         #
         # $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
@@ -244,6 +243,10 @@ function Trac-Install {
 
     if ($usingFirefox) {
         & cinst.exe --no-progress firefox
+    }
+
+    if ($usingTidylib) {
+        & cinst.exe --no-progress html-tidy
     }
 
     & pip.exe list --format=columns
