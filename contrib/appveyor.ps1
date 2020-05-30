@@ -67,7 +67,7 @@ $pipPackages = @(
 )
 
 $condaPackages = @(
-    'lxml'
+    'tidy-html5'
 )
 
 $svnBase = "svn-win32-1.8.15"
