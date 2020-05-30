@@ -63,11 +63,12 @@ $pipPackages = @(
     'pytz',
     'textile',
     'wheel',
-    'selenium'
+    'selenium',
+    'pytidylib'
 )
 
 $condaPackages = @(
-    'lxml'
+    'tidy-html5'
 )
 
 $svnBase = "svn-win32-1.8.15"
