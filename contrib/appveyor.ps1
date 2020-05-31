@@ -152,34 +152,34 @@ if (-not $env:APPVEYOR) {
 # Prologue
 # ------------------------------------------------------------------
 
-# Actions common to all steps (set up the PATH, determine Python version...)
-
-$env:Path = "$pyHome;$pyHome\Scripts;$pyHome\Library\bin;$msysHome;$($env:Path)"
+# Actions common to all steps
 
 $pyV = [string](& python.exe -c 'import sys; print sys.version' 2>&1)
 $pyVersion = if ($pyV -match '^(\d\.\d)') { $Matches[1] }
 $py64 = ($pyV -match '64 bit')
 $pyIsConda = $pyV -match 'Continuum Analytics'
 
-# Subversion support
-if (-not $py64) {
-    $env:Path = "$deps\$svnBase\bin;$($env:Path)"
-    $env:PYTHONPATH = "$deps\$pyVersion\$svnBase\python;$($env:PYTHONPATH)"
-}
-
-if ($usingFirefox) {
-    $env:Path = "$($env:Path);$firefoxHome"
-}
-
-if ($usingTidylib) {
-    $env:Path = "$($env:Path);$tidylibHome"
-}
-
 # ------------------------------------------------------------------
 # Steps
 # ------------------------------------------------------------------
 
 function Trac-Install {
+
+    $env:Path = "$pyHome;$pyHome\Scripts;$pyHome\Library\bin;$msysHome;$($env:Path)"
+
+    # Subversion support
+    if (-not $py64) {
+        $env:Path = "$deps\$svnBase\bin;$($env:Path)"
+        $env:PYTHONPATH = "$deps\$pyVersion\$svnBase\python;$($env:PYTHONPATH)"
+    }
+    
+    if ($usingFirefox) {
+        $env:Path = "$($env:Path);$firefoxHome"
+    }
+    
+    if ($usingTidylib) {
+        $env:Path = "$($env:Path);$tidylibHome"
+    }
 
     Write-Step -Name INSTALL -Skip $skipInstall
 
