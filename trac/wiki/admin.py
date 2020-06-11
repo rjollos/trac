@@ -91,7 +91,7 @@ class WikiAdmin(Component):
         return pkg_resources.resource_filename('trac.wiki', 'default-pages')
 
     def get_wiki_list(self, prefix=None):
-        return list(WikiSystem(self.env).get_pages(prefix))
+        return sorted(WikiSystem(self.env).get_pages(prefix))
 
     def export_page(self, page, filename):
         for text, in self.env.db_query("""
