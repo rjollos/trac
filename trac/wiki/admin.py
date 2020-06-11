@@ -211,10 +211,12 @@ class WikiAdmin(Component):
             raise AdminCommandError(_("The new name is invalid."))
         with self.env.db_transaction:
             if model.WikiPage(self.env, new_name).exists:
-                raise AdminCommandError(_("The page %(name)s already exists.",
+                raise AdminCommandError(_("The page '%(name)s' already exists.",
                                           name=new_name))
             page = model.WikiPage(self.env, name)
             page.rename(new_name)
+            printout(_(" '%(name1)s' renamed to '%(name2)s'",
+                       name1=name, name2=new_name))
 
     def _do_remove(self, name):
         with self.env.db_transaction:
@@ -227,9 +229,12 @@ class WikiAdmin(Component):
             else:
                 page = model.WikiPage(self.env, name)
                 page.delete()
+                printout(_(" '%(page)s' deleted", page=name))
 
     def _do_export(self, page, filename=None):
         self.export_page(page, filename)
+        if filename:
+            printout(" '%s' => '%s'" % (page, filename))
 
     def _do_import(self, page, filename=None):
         self._import(filename, page)
@@ -249,7 +254,7 @@ class WikiAdmin(Component):
                    name.endswith('*') and p.startswith(name[:-1])
                    for name in names):
                 dst = os.path.join(directory, unicode_quote(p, ''))
-                printout(' %s => %s' % (p, dst))
+                printout(" '%s' => '%s'" % (p, dst))
                 self.export_page(p, dst)
 
     def _do_load(self, *paths):
@@ -266,10 +271,9 @@ class WikiAdmin(Component):
 
     def _import(self, filename, title, replace=False):
         if self.import_page(filename, title, replace=replace):
-            printout(_("  %(title)s imported from %(filename)s",
-                       filename=path_to_unicode(filename), title=title))
+            printout(" '%s' => '%s'" % (path_to_unicode(filename), title))
         else:
-            printout(_("  %(title)s is already up to date", title=title))
+            printout(_(" '%(title)s' is already up to date", title=title))
 
     def _load_or_replace(self, paths, replace):
         with self.env.db_transaction:
