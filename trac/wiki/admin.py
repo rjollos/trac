@@ -127,8 +127,9 @@ class WikiAdmin(Component):
         with self.env.db_transaction as db:
             # Make sure we don't insert the exact same page twice
             old = None
-            for old, in db("""
-                    SELECT text FROM wiki WHERE name=%s
+            max_version = None
+            for old, max_version in db("""
+                    SELECT text, version FROM wiki WHERE name=%s
                     ORDER BY version DESC LIMIT 1
                     """, (title,)):
                 if title in create_only:
@@ -139,21 +140,17 @@ class WikiAdmin(Component):
                     return False
 
             if replace and old:
-                db("""UPDATE wiki SET text=%s
-                      WHERE name=%s
-                        AND version=(SELECT max(version) FROM wiki
-                                     WHERE name=%s)
-                      """, (data, title, title))
+                db("""UPDATE wiki SET text=%s WHERE name=%s AND version=%s
+                      """, (data, title, max_version))
             else:
-                db("""INSERT INTO wiki (version, readonly, name, time, author,
-                                        text)
+                db("""INSERT INTO wiki
+                       (version, readonly, name, time, author, text)
                       SELECT 1 + COALESCE(max(version), 0),
                              COALESCE(max(readonly), 0),
                              %s, %s, 'trac', %s FROM wiki
-                      WHERE name=%s AND version=(SELECT max(version)
-                                                 FROM wiki WHERE name=%s)
+                      WHERE name=%s AND version=%s
                       """, (title, to_utimestamp(datetime_now(utc)), data,
-                            title, title))
+                            title, max_version))
             if not old:
                 del WikiSystem(self.env).pages
 
