@@ -136,7 +136,7 @@ class WikiAdmin(Component):
         return True
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
-        count = 0
+        loaded = []
         with self.env.db_transaction:
             for page in sorted(os.listdir(dir)):
                 if page in ignore:
@@ -145,8 +145,8 @@ class WikiAdmin(Component):
                 if os.path.isfile(filename):
                     page = unicode_unquote(page.encode('utf-8'))
                     if self.import_page(filename, page, create_only, replace):
-                        count += 1
-        return count
+                        loaded.append(page)
+        return loaded
 
     def _complete_page(self, args):
         if len(args) == 1:
@@ -232,10 +232,11 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
 
     def _do_upgrade(self):
-        count = self.load_pages(self.default_pages_dir,
+        names = self.load_pages(self.default_pages_dir,
                                 ignore=['WikiStart', 'SandBox'],
                                 create_only=['InterMapTxt'])
-        printout(_("Upgrade done: %(count)s pages upgraded.", count=count))
+        printout(_("Upgrade done: %(count)s pages upgraded.",
+                   count=len(names)))
 
     def _import(self, filename, title, replace=False):
         if self.import_page(filename, title, replace=replace):
@@ -260,11 +261,12 @@ class WikiAdmin(Component):
     def environment_created(self):
         """Add default wiki pages when environment is created."""
         self.log.info("Installing default wiki pages")
-        with self.env.db_transaction as db:
-            self.load_pages(self.default_pages_dir)
-            for page in os.listdir(self.default_pages_dir):
-                if page not in ('InterMapTxt', 'SandBox', 'WikiStart'):
-                    db("UPDATE wiki SET readonly='1' WHERE name=%s", (page,))
+        with self.env.db_transaction:
+            for name in self.load_pages(self.default_pages_dir):
+                if name not in ('InterMapTxt', 'SandBox', 'WikiStart'):
+                    page = model.WikiPage(self.env, name)
+                    page.readonly = 1
+                    page.save(None, None)
 
     def environment_needs_upgrade(self):
         pass
