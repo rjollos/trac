@@ -19,7 +19,7 @@ from trac.admin import *
 from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.wiki import model
-from trac.wiki.api import WikiSystem, validate_page_name
+from trac.wiki.api import WikiSystem
 from trac.util import lazy, read_file
 from trac.util.datefmt import format_datetime, from_utimestamp
 from trac.util.text import path_to_unicode, print_table, printout, \
@@ -185,14 +185,15 @@ class WikiAdmin(Component):
             return
         if not new_name:
             raise AdminCommandError(_("A new name is mandatory for a rename."))
-        if not validate_page_name(new_name):
-            raise AdminCommandError(_("The new name is invalid."))
         with self.env.db_transaction:
             if model.WikiPage(self.env, new_name).exists:
                 raise AdminCommandError(_("The page '%(name)s' already exists.",
                                           name=new_name))
             page = model.WikiPage(self.env, name)
-            page.rename(new_name)
+            try:
+                page.rename(new_name)
+            except TracError as e:
+                raise AdminCommandError(e)
             printout(_(" '%(name1)s' renamed to '%(name2)s'",
                        name1=name, name2=new_name))
 

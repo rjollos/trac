@@ -73,7 +73,7 @@ wiki rename <page> <new_name>
     Rename wiki page
 
 ===== test_wiki_rename_new_name_invalid =====
-Error: The new name is invalid.
+Error: Invalid Wiki page name '%(name)s'
 ===== test_wiki_rename_new_page_exists =====
 Error: The page 'PageTwo' already exists.
 ===== test_wiki_replace =====
