@@ -65,6 +65,7 @@ PageTwo
 ===== test_wiki_rename =====
  '%(name1)s' renamed to '%(name2)s'
 ===== test_wiki_rename_name_unchanged =====
+Error: Page name is unchanged.
 ===== test_wiki_rename_name_not_specified =====
 Error: Invalid arguments
 

@@ -181,8 +181,6 @@ class WikiAdmin(Component):
              ], [_("Title"), _("Edits"), _("Modified")])
 
     def _do_rename(self, name, new_name):
-        if new_name == name:
-            return
         page = model.WikiPage(self.env, name)
         try:
             page.rename(new_name)

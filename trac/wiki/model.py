@@ -201,6 +201,9 @@ class WikiPage(object):
         if not new_name:
             raise TracError(_("A new name is mandatory for a rename."))
 
+        if self.name == new_name:
+            raise TracError(_("Page name is unchanged."))
+
         if not validate_page_name(new_name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=new_name))

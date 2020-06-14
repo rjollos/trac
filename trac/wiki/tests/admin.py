@@ -460,7 +460,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         name = self._insert_page()
 
         rv, output = self.execute('rename', name, name)
-        self.assertEqual(0, rv, output)
+        self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
         self.assertTrue(WikiPage(self.env, name).exists)
 
