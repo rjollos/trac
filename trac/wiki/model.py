@@ -206,8 +206,8 @@ class WikiPage(object):
         with self.env.db_transaction as db:
             new_page = WikiPage(self.env, new_name)
             if new_page.exists:
-                raise TracError(_("Can't rename to existing %(name)s page.",
-                                  name=new_name))
+                raise TracError(_("The page '%(name)s' already exists.",
+                                   name=new_name))
 
             db("UPDATE wiki SET name=%s WHERE name=%s", (new_name, old_name))
             # Invalidate page name cache

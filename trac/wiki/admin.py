@@ -186,9 +186,6 @@ class WikiAdmin(Component):
         if not new_name:
             raise AdminCommandError(_("A new name is mandatory for a rename."))
         with self.env.db_transaction:
-            if model.WikiPage(self.env, new_name).exists:
-                raise AdminCommandError(_("The page '%(name)s' already exists.",
-                                          name=new_name))
             page = model.WikiPage(self.env, name)
             try:
                 page.rename(new_name)
