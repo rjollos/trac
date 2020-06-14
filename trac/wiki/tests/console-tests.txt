@@ -79,7 +79,7 @@ Error: The page 'PageTwo' already exists.
 ===== test_wiki_replace =====
  '%(path1)s' => '%(name1)s'
  '%(path2)s' => '%(name2)s'
-===== test_wiki_replace_page_exists =====
+===== test_wiki_replace_new_page =====
  '%(path)s' => '%(name)s'
 ===== test_wiki_replace_pages_from_dir =====
  '%(path1)s' => '%(name1)s'

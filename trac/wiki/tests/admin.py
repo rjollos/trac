@@ -527,8 +527,8 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertEqual(1, page1.version)
         self.assertEqual(1, page2.version)
 
-    def test_wiki_replace_page_exists(self):
-        name = 'PageOne'
+    def test_wiki_replace_new_page(self):
+        name = random_unique_camel()
         path = os.path.join(self.tempdir, name)
         content = self._write_file(path)
         rv, output = self.execute('replace', path)
@@ -538,14 +538,13 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             'name': name,
             'path': path,
         })
-        self.assertEqual(content, page.text)
         self.assertEqual(1, page.version)
+        self.assertEqual(content, page.text)
 
     def test_wiki_replace_pages_from_dir(self):
-        name1 = 'PageOne'
-        name2 = 'PageTwo'
-        path1 = os.path.join(self.tempdir, name1)
-        path2 = os.path.join(self.tempdir, name2)
+        names = self._insert_pages(2)
+        path1 = os.path.join(self.tempdir, names[0])
+        path2 = os.path.join(self.tempdir, names[1])
         content1 = random_paragraph()
         content2 = random_paragraph()
         with open(path1, 'w') as f:
@@ -554,12 +553,12 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             f.write(content2)
         os.mkdir(os.path.join(self.tempdir, 'subdir'))
         rv, output = self.execute('replace', self.tempdir)
-        page1 = WikiPage(self.env, name1)
-        page2 = WikiPage(self.env, name2)
+        page1 = WikiPage(self.env, names[0])
+        page2 = WikiPage(self.env, names[1])
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output, {
-            'name1': name1,
-            'name2': name2,
+            'name1': names[0],
+            'name2': names[1],
             'path1': path1,
             'path2': path2,
         })

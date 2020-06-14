@@ -21,8 +21,7 @@ from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem, validate_page_name
 from trac.util import lazy, read_file
-from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
-                              to_utimestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp
 from trac.util.text import path_to_unicode, print_table, printout, \
                            to_unicode, unicode_quote, unicode_unquote
 from trac.util.translation import _
@@ -111,9 +110,6 @@ class WikiAdmin(Component):
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))
 
     def import_page(self, filename, title, create_only=[], replace=False):
-        if not validate_page_name(title):
-            raise AdminCommandError(_("Invalid Wiki page name '%(name)s'",
-                                      name=title))
         if filename:
             if not os.path.isfile(filename):
                 raise AdminCommandError(_("'%(name)s' is not a file",
@@ -122,39 +118,24 @@ class WikiAdmin(Component):
         else:
             data = sys.stdin.read()
         data = to_unicode(data, 'utf-8')
-        title = unicode_unquote(title.encode('utf-8'))
+        name = unicode_unquote(title.encode('utf-8'))
 
-        with self.env.db_transaction as db:
-            # Make sure we don't insert the exact same page twice
-            old = None
-            max_version = None
-            for old, max_version in db("""
-                    SELECT text, version FROM wiki WHERE name=%s
-                    ORDER BY version DESC LIMIT 1
-                    """, (title,)):
-                if title in create_only:
-                    self.log.info("%s already exists", title)
-                    return False
-                if data == old:
-                    self.log.info("%s is already up to date", title)
-                    return False
+        page = model.WikiPage(self.env, name)
+        if page.exists:
+            if name in create_only:
+                self.log.info("%s already exists", name)
+                return False
+            if data == page.text:
+                self.log.info("%s is already up to date", name)
+                return False
 
-            if replace and old:
-                db("""UPDATE wiki SET text=%s WHERE name=%s AND version=%s
-                      """, (data, title, max_version))
-            else:
-                db("""INSERT INTO wiki
-                       (version, readonly, name, time, author, text)
-                      SELECT 1 + COALESCE(max(version), 0),
-                             COALESCE(max(readonly), 0),
-                             %s, %s, 'trac', %s FROM wiki
-                      WHERE name=%s AND version=%s
-                      """, (title, to_utimestamp(datetime_now(utc)), data,
-                            title, max_version))
-            if not old:
-                del WikiSystem(self.env).pages
+        page.text = data
+        try:
+            page.save('trac', None, replace=replace)
+        except TracError as e:
+            raise AdminCommandError(e)
 
-        self.log.info("%s imported from %s", title, path_to_unicode(filename))
+        self.log.info("%s imported from %s", name, path_to_unicode(filename))
         return True
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
