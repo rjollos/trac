@@ -198,6 +198,9 @@ class WikiPage(object):
         if not self.exists:
             raise TracError(_("Cannot rename non-existent page"))
 
+        if not new_name:
+            raise TracError(_("A new name is mandatory for a rename."))
+
         if not validate_page_name(new_name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=new_name))

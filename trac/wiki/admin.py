@@ -183,16 +183,13 @@ class WikiAdmin(Component):
     def _do_rename(self, name, new_name):
         if new_name == name:
             return
-        if not new_name:
-            raise AdminCommandError(_("A new name is mandatory for a rename."))
-        with self.env.db_transaction:
-            page = model.WikiPage(self.env, name)
-            try:
-                page.rename(new_name)
-            except TracError as e:
-                raise AdminCommandError(e)
-            printout(_(" '%(name1)s' renamed to '%(name2)s'",
-                       name1=name, name2=new_name))
+        page = model.WikiPage(self.env, name)
+        try:
+            page.rename(new_name)
+        except TracError as e:
+            raise AdminCommandError(e)
+        printout(_(" '%(name1)s' renamed to '%(name2)s'",
+                   name1=name, name2=new_name))
 
     def _do_remove(self, name):
         with self.env.db_transaction:
