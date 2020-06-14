@@ -93,19 +93,16 @@ class WikiAdmin(Component):
         return sorted(WikiSystem(self.env).get_pages(prefix))
 
     def export_page(self, page, filename):
-        for text, in self.env.db_query("""
-                SELECT text FROM wiki WHERE name=%s
-                ORDER BY version DESC LIMIT 1
-                """, (page,)):
+        wikipage = model.WikiPage(self.env, page)
+        if wikipage.exists:
             if not filename:
-                printout(text)
+                printout(wikipage.text)
             else:
                 if os.path.isfile(filename):
                     raise AdminCommandError(_("File '%(name)s' exists",
                                               name=path_to_unicode(filename)))
                 with open(filename, 'w') as f:
-                    f.write(text.encode('utf-8'))
-            break
+                    f.write(wikipage.text.encode('utf-8'))
         else:
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))
 
