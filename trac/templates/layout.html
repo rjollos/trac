@@ -57,7 +57,17 @@
           return false;
         });
         </py:if>
-        $(".trac-autofocus").focus();
+        var autofocus = location.hash;
+        autofocus = autofocus ? document.getElementById(autofocus.substring(1))
+                              : null;
+        if (autofocus !== null) {
+          autofocus = $(autofocus);
+          if (!autofocus.is(':input'))
+            autofocus = null;
+        }
+        if (autofocus === null)
+          autofocus = $(".trac-autofocus");
+        autofocus.focus();
         $(".trac-target-new").attr("target", "_blank");
         setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
         $(".trac-disable-on-submit").disableOnSubmit();
