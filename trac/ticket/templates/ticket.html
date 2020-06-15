@@ -205,7 +205,7 @@
                 <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
                 here.
               </label>
-              <textarea id="comment" name="comment" class="wikitext trac-fullwidth trac-resizable" rows="10" cols="78">
+              <textarea id="comment" name="comment" class="${classes('wikitext', 'trac-fullwidth', 'trac-resizable', 'trac-autofocus' if replyto else None)}" rows="10" cols="78">
 ${comment}</textarea>
             </fieldset>
           </div>
