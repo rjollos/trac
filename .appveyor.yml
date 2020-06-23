@@ -2,7 +2,7 @@ version: '{branch}.{build}'
 clone_depth: 20
 only_commits:
   files:
-    - .appveyor
+    - .appveyor.yml
     - contrib/appveyor.ps1
     - setup.py
     - trac/**/*.py
