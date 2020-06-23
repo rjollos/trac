@@ -26,7 +26,7 @@ from trac.config import BoolOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.notification.api import NotificationSystem
-from trac.perm import IPermissionPolicy
+from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.resource import (
     Resource, ResourceNotFound, get_resource_url, render_resource_link,
     get_resource_shortname
@@ -1902,9 +1902,13 @@ class DefaultTicketPolicy(Component):
 
     realm = TicketSystem.realm
 
+    def __init__(self):
+        self._defined_actions = PermissionSystem(self.env).get_actions()
+
     def check_permission(self, action, username, resource, perm):
 
         if action == 'TICKET_CHG_MILESTONE' and \
+                action not in self._defined_actions and \
                 self._is_valid_resource(resource, 'milestone') and \
                 'MILESTONE_VIEW' in perm:
             return True
