@@ -1902,13 +1902,10 @@ class DefaultTicketPolicy(Component):
 
     realm = TicketSystem.realm
 
-    def __init__(self):
-        self._defined_actions = PermissionSystem(self.env).get_actions()
-
     def check_permission(self, action, username, resource, perm):
 
         if action == 'TICKET_CHG_MILESTONE' and \
-                action not in self._defined_actions and \
+                action not in PermissionSystem(self.env).actions and \
                 self._is_valid_resource(resource, 'milestone') and \
                 'MILESTONE_VIEW' in perm:
             return True
