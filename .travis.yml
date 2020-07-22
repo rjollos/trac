@@ -22,7 +22,7 @@ before_install:
   } >"$HOME/.pip/pip.conf"
 - |
   if [ "$TRAVIS_OS_NAME" = osx ]; then
-    test -d $HOME/venv-lib || mkdir $HOME/venv-lib
+    test -d "$HOME/venv-lib" || mkdir "$HOME/venv-lib"
     eval "$(pyenv init -)"
     pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
     venv="$HOME/venv-$pyver_latest"
