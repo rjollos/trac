@@ -152,9 +152,9 @@ class FunctionalTestEnvironment(object):
         config.save()
         self._tracadmin('initenv', self.tracdir, self.dburi,
                         '--config=%s' % config_file)
-        htpasswd_py = os.path.join(self.trac_src, 'contrib', 'htpasswd.py')
-        if call([sys.executable, htpasswd_py, '-c', '-b', self.htpasswd,
-                 'admin', 'admin'], close_fds=close_fds, cwd=self.command_cwd):
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-c', '-b',
+                 self.htpasswd, 'admin', 'admin'],
+                close_fds=close_fds, cwd=self.command_cwd):
             raise Exception("Unable to setup admin password")
         self.adduser('user')
         self.adduser('joe')
@@ -172,16 +172,16 @@ class FunctionalTestEnvironment(object):
         """Add a user to the environment.  The password will be set to the
         same as username."""
         self._tracadmin('session', 'add', user)
-        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
-                 'htpasswd.py'), '-b', self.htpasswd,
-                 user, user], close_fds=close_fds, cwd=self.command_cwd):
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-b',
+                 self.htpasswd, user, user],
+                close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
     def deluser(self, user):
         """Delete a user from the environment."""
         self._tracadmin('session', 'delete', user)
-        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
-                 'htpasswd.py'), '-D', self.htpasswd, user],
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-D',
+                 self.htpasswd, user],
                 close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to remove password for user "%s"' % user)
 
@@ -260,8 +260,8 @@ class FunctionalTestEnvironment(object):
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        console_py = os.path.join(self.trac_src, 'trac', 'admin', 'console.py')
-        proc = run([sys.executable, console_py, self.tracdir] + list(args),
+        proc = run([sys.executable, '-m', 'trac.admin.console',
+                    self.tracdir] + list(args),
                    stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
                    close_fds=close_fds, cwd=self.command_cwd)
         if proc.stderr:
@@ -281,10 +281,7 @@ class FunctionalTestEnvironment(object):
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
-        args = [
-            sys.executable,
-            os.path.join(self.trac_src, 'trac', 'web', 'standalone.py')
-        ]
+        args = [sys.executable, '-m', 'trac.web.standalone']
         options = ["--port=%s" % self.port, "-s", "--hostname=127.0.0.1",
                    "--basic-auth=trac,%s," % self.htpasswd]
         if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
