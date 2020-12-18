@@ -264,7 +264,7 @@ class FunctionalTestEnvironment(object):
         proc = run([sys.executable, console_py, self.tracdir] + list(args),
                    stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
                    close_fds=close_fds, cwd=self.command_cwd)
-        if proc.returncode or proc.stderr:
+        if proc.stderr:
             self.logfile.write(proc.stderr)
         out = str(proc.stdout, 'utf-8')
         if proc.returncode:
