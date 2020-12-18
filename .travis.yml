@@ -40,7 +40,7 @@ before_install:
 install:
 - set -e
 - |
-  if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
+  if [ "$TRAVIS_BUILD_STAGE_NAME" = test ]; then
     requires='Jinja2 selenium pytidylib'
     if [ "$build" != minimum ]; then requires="$requires Babel Pygments docutils textile pytz"; fi
     if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
@@ -52,7 +52,7 @@ install:
   python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
 - pip list
 - |
-  if [ "$build" != minimum -a "$TRAVIS_BUILD_STAGE_NAME" = Test -a "$TRAVIS_OS_NAME" = linux ]; then
+  if [ "$build" != minimum -a "$TRAVIS_BUILD_STAGE_NAME" = test -a "$TRAVIS_OS_NAME" = linux ]; then
   (
     set -ex
     test -d "$HOME/src" || mkdir "$HOME/src"
