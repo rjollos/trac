@@ -192,7 +192,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             'path1': os.path.join(self.tempdir, names[0]),
             'path2': os.path.join(self.tempdir, names[1]),
         })
-        self.assertEquals(names, sorted(os.listdir(self.tempdir)))
+        self.assertEqual(names, sorted(os.listdir(self.tempdir)))
         self.assertFileContentMatchesPage(names)
 
     def test_wiki_dump_all_create_dst_dir(self):
